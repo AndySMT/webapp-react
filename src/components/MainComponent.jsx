@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Moviedetail from "../pages/MovieDetail";
 export default function MainComponent() {
   const [movies, setMovies] = useState([]);
 
@@ -33,10 +34,7 @@ export default function MainComponent() {
               </div>
               <div className="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center">
                 <p className="">{`${movie.genre} - ${movie.release_year}`}</p>
-                <Link
-                  to={`${"http://localhost:5173/movie"}${movie.id}`}
-                  className="btn btn-primary btn-sm"
-                >
+                <Link to={`/${movie.id}`} className="btn btn-primary btn-sm">
                   Info
                 </Link>
               </div>
