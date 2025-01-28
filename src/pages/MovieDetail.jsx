@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReviewForm from "../components/ReviewForm";
 
 function Moviedetail() {
   const { id } = useParams();
@@ -10,11 +11,18 @@ function Moviedetail() {
     axios
       .get(`${import.meta.env.VITE_MOVIES_URL}/${id}`)
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         setMovie(res.data);
       })
       .catch((err) => console.error("Errore nel caricamento del film", err));
   }, [id]);
+
+  const handleAddReview = (newReview) => {
+    setMovie((movie) => ({
+      ...movie,
+      reviews: [...movie.reviews, newReview],
+    }));
+  };
   const renderStars = (vote) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -76,6 +84,9 @@ function Moviedetail() {
               </div>
             </div>
           </div>
+        </section>
+        <section>
+          <ReviewForm onSubmit={handleAddReview} movieId={id} />
         </section>
       </>
     )
