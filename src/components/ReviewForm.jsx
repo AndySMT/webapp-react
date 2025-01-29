@@ -5,6 +5,8 @@ function ReviewForm({ movieId, onSubmit }) {
   const [name, setName] = useState("");
   const [text, setText] = useState("");
   const [vote, setVote] = useState(0);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +15,22 @@ function ReviewForm({ movieId, onSubmit }) {
       text,
       vote,
     };
+    if (name.trim().length < 3) {
+      setError("Il nome deve avere almeno 3 caratteri.");
+      setSubmitting(false);
+      return;
+    }
+    if (text.trim().length < 10) {
+      setError("La recensione deve contenere almeno 10 caratteri.");
+      setSubmitting(false);
+      return;
+    }
+    if (vote === 0) {
+      setError("Devi assegnare un voto.");
+      setSubmitting(false);
+      return;
+    }
+    setError("");
     axios
       .post(`${import.meta.env.VITE_API_URL}/movies/${movieId}`, newReview)
       .then((res) => {
@@ -25,7 +43,7 @@ function ReviewForm({ movieId, onSubmit }) {
         console.error(err);
       })
       .finally(() => {
-        console.log("Review aggiunta");
+        setSubmitting(false);
       });
   };
 
@@ -52,7 +70,7 @@ function ReviewForm({ movieId, onSubmit }) {
         <div className="col-md-12">
           <form onSubmit={handleSubmit}>
             <h2 className="text-primary">Aggiungi una Recensione</h2>
-
+            {error && <div className="alert alert-danger">{error}</div>}
             <div className="mb-3">
               <label htmlFor="name" className="form-label">
                 Nome
@@ -63,7 +81,6 @@ function ReviewForm({ movieId, onSubmit }) {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
               />
             </div>
 
@@ -77,7 +94,6 @@ function ReviewForm({ movieId, onSubmit }) {
                 rows="4"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                required
               ></textarea>
             </div>
 
@@ -86,7 +102,7 @@ function ReviewForm({ movieId, onSubmit }) {
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Invia Recensione
+              {submitting ? "Invio in corso..." : "Invia"}
             </button>
           </form>
         </div>
